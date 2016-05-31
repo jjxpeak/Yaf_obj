@@ -15,6 +15,7 @@ class Db
     private $type;
     private $host;
     private $database;
+    private $tables;
     public function __construct($config){
         $this -> parseConfig($config);
         $this -> linkDb();
@@ -52,10 +53,25 @@ class Db
         switch($this->type){
             case 'mysql':
                 $this->link = mysqli_connect($this->host,$this->user,$this->password,$this->database);
+//                $hash_tables = Yaf_Registry::get('hash_tables');
+//                if(!empty($hash_tables)){
+//                    $this->tables = $hash_tables;
+//                }else{
+//                    $tablesRes = mysqli_query($this->link,'SHOW TABLES');
+//                    $tables = mysqli_fetch_all($tablesRes,MYSQLI_ASSOC);
+//                    $tables = array_column($tables,'Tables_in_'.$this->database);
+//                    Yaf_Registry::set('Hash_tables',$tables);
+//                    $this->tables = $tables;
+//                }
                 break;
             case 'PDO':
             default;
-            $this->link = new $this->type($this->dns,$this->user,$this->password);
+                $this->link = new $this->type($this->dns,$this->user,$this->password);
+
         }
     }
+
+//    private function verifyTable($table){
+//        return in_array($table,$this->tables)?true:false;
+//    }
 }

@@ -32,7 +32,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
 
         $config = Yaf_Registry::get('config')['server_config'];
         $db = new Db($config);
-        Yaf_Registry::set('db',$db);
+        Yaf_Registry::set($config['host'],$db);
     }
 
     public function __initSerurity(Yaf_Dispatcher $dispatcher){
