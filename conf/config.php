@@ -5,9 +5,9 @@
  * Time: 10:20
  */
 
-$conf = array(
+return array(
     "WEB_NAME" => $_SERVER["SERVER_NAME"],
-    "db_type" => "mysql",
+    "db_type" => "PDO",
     "host" => "localhost",
     "port" => "3306",
     "user" => "root",

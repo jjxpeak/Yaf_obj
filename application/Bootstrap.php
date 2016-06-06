@@ -12,15 +12,15 @@
  */
 class Bootstrap extends Yaf_Bootstrap_Abstract
 {
+    private $_config;
     /**
      * 注册系统配置项
      * @param Yaf_Dispatcher $dispatcher
      */
     public function _initConfig(Yaf_Dispatcher $dispatcher){
-        ini_set('yaf.thowException' , 1);
-        require( CONFIG_PATH."config.php");
-        $config['server_config'] = $conf;
-        $config['yaf_config'] = Yaf_Application::app()->getConfig();
+        //ini_set('yaf.thowException' , 1);
+        $config = require( CONFIG_PATH."config.php") ;
+        $this->_config = Yaf_Application::app()->getConfig();
         Yaf_Registry::set("config" , $config);
     }
 
@@ -30,15 +30,30 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
      */
     public function _initDb(Yaf_Dispatcher $dispatcher){
 
-        $config = Yaf_Registry::get('config')['server_config'];
-        $db = new Db($config);
-        Yaf_Registry::set($config['host'],$db);
+        $config = Yaf_Registry::get('config');
+        new Db($config);
     }
 
-    public function __initSerurity(Yaf_Dispatcher $dispatcher){
+    /**
+     * 注册加密类
+     * @param Yaf_Dispatcher $dispatcher
+     */
+    public function __initSerurity(Yaf_Dispatcher $dispatcher)
+    {
         $secunrity = new Security();
-        Yaf_Registry::set('secunrity',$secunrity);
+        Yaf_Registry::set('secunrity', $secunrity);
     }
+
+    /**
+     * 注册路由
+     * @param Yaf_Dispatcher $dispatcher
+     */
+    public function _initRoute(Yaf_Dispatcher $dispatcher){
+        $router = Yaf_Dispatcher::getInstance()->getRouter();
+        $router->addConfig($this->_config->routes);
+    }
+
+
 
 
 }

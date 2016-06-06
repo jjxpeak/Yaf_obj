@@ -7,11 +7,17 @@
  */
 class indexController extends Yaf_Controller_Abstract
 {
+    private $model;
+    private $view;
+    public function init(){
+        $this ->view = $this->initView()->_view;
+        $host = Yaf_Registry::get('host');
+        $db = Yaf_Registry::get($host);
+        $this->model = new Model($db);
+    }
     public function indexAction(){
-        $db = Yaf_Registry::get(Yaf_Registry::get('config')['server_config']['host']);
-
-        $a = new Uploader();
-        $a -> index();
+        var_dump($this->model->test());
+        $this -> view -> assign('content','test');
     }
 
 }
