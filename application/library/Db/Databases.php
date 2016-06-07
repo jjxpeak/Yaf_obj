@@ -9,7 +9,7 @@ class Db_Databases
 {
     private $link;
     private $sql;
-    public $where;
+    private $where;
 
     /**
      * Pdo constructor.
@@ -29,7 +29,7 @@ class Db_Databases
 
         if (is_string($sql)) {
             $reg = '/^(select) ([a-z0-9A-Z\,\.*]+) (from) (\`[a-z0-9A-Z]+\`|[a-z0-9A-Z]+)/i';
-
+        try{
             if (preg_match($reg, $sql)) {
                 $this->sql = $sql;
                 $query = $this->link->query($sql, PDO::FETCH_ASSOC);
@@ -38,8 +38,11 @@ class Db_Databases
                     return $re;
                 }
             };
+        }catch (PDOException $e){
+                echo $e->getMessage();
+            }
         } else {
-            return false;
+            return NULL;
         }
 
     }
@@ -54,83 +57,73 @@ class Db_Databases
 
     }
 
-    public function where($where)
+    /**
+     * @param mixed $where
+     * @return Object $this
+     */
+    protected function where($where = null)
     {
         $exp = '';
         $str = '';
-        try {
-            if (is_string($where) && !is_null($where) && $where != 'null') {
-                $this->where = ' WHERE ' . $where . ' ';
-            } elseif (is_array($where) && !is_null($where) && $where != 'null') {
-                foreach ($where as $key => $value) {
-                    if (is_array($value)) {
-                        foreach ($value as $e) {
-                            if(!$exp){
-                                switch ($e) {
-                                    case 'gt':
-                                        $exp = ' > ';
-                                        break;
-                                    case 'lt':
-                                        $exp = ' < ';
-                                        break;
-                                    case 'in':
-                                        $exp = ' in(::) ';
-                                        break;
-                                    case 'egt':
-                                        $exp = ' >= ';
-                                        break;
-                                    case 'elt':
-                                        $exp = ' <= ';
-                                        break;
-                                    case 'neq':
-                                        $exp = ' != ';
-                                        break;
-                                    case 'eq':
-                                    default:
-                                        $exp = ' = ';
-                                }
-                            }
-                            if (is_array($e)) {
-                                try {
-                                    if (strstr($exp,'in')) {
-                                        foreach ($e as $s) {
-                                            $str .= $s . ',';
-                                        }
-
-                                        $str = substr($str, 0,-1);
-                                        $this->where  =  '`WHERE`' . str_replace('::',$str ,$exp);
-                                    } else {
-                                        throw new Yaf_Exception('使用=、>、<、>=、<=、!= 只接收字符串，不接收数组');
-                                    }
-                                } catch (Yaf_Exception $e) {
-                                    echo '错误信息:' . $e->getMessage() . '</br>';
-                                    echo '文件位置:' . $e->getFile() . '</br>';
-                                    echo '行号:' . $e->getLine() . '</br>';
-                                    exit;
-                                }
-                            } else {
-                                $this->where = ' `WHERE`' . $key . $exp . $e . ' ';
+        if(!$where) return $this;
+        if (is_array($where) && !is_null($where) && $where != 'null') {
+            foreach ($where as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $e) {
+                        if (!$exp) {
+                            switch ($e) {
+                                case 'gt':
+                                    $exp = ' > ';
+                                    break;
+                                case 'lt':
+                                    $exp = ' < ';
+                                    break;
+                                case 'in':
+                                    $exp = ' in(::) ';
+                                    break;
+                                case 'egt':
+                                    $exp = ' >= ';
+                                    break;
+                                case 'elt':
+                                    $exp = ' <= ';
+                                    break;
+                                case 'neq':
+                                    $exp = ' != ';
+                                    break;
+                                case 'eq':
+                                default:
+                                    $exp = ' = ';
                             }
                         }
+                        if (strstr($exp, 'in')) {
+                            $this->where = '`WHERE`' . str_replace('::', $e, $exp);
+                        }
+                        $this->where ? $this->where : $this->where = ' `WHERE`' . $key . $exp . $e . ' ';
 
-                    } else {
-                        $this->where = ' `WHERE` ' . $key . ' = ' . $value;
                     }
+
+                } else {
+                    $this->where = ' `WHERE` ' . $key . ' = ' . $value;
                 }
-            } else{
-                throw new Yaf_Exception('只接收Array和String并且不能为NULL');
             }
-        }catch(Yaf_Exception $e){
-            echo '错误信息:' . $e->getMessage() . '</br>';
-            echo '文件位置:' . $e->getFile() . '</br>';
-            echo '行号:' . $e->getLine() . '</br>';
-            exit;
         }
         return $this;
     }
 
+    /**
+     * 获取最后一条sql
+     * @return String
+     */
     public function getLastSql()
     {
         return $this->sql;
+    }
+
+    /**
+     * 获取查询字段
+     * @return Object $this
+     */
+    public function field(){
+
     }
 }
