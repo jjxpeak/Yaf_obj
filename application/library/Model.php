@@ -14,7 +14,9 @@ class Model extends Db_Databases
 
     public function test()
     {
-            $this->where(array('test',array('in','1,2,3')));
-        return $this->where;
+        $where = array('id'=>array('in','1,2,3'));
+        $this->table('city');
+        var_dump($this->select());
+        return $this->getLastSql();
     }
 }

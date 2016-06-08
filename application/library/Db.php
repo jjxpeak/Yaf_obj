@@ -15,7 +15,7 @@ class Db
     private $type;
     private $host;
     private $database;
-    private $tables;
+    private $charset = 'utf8';
 
     public function __construct($config)
     {
@@ -47,6 +47,7 @@ class Db
                         $this->user = $config['user'];
                         $this->password = $config['password'];
                         $this->type = $config['db_type'];
+                        !empty($config['charset'])?$this->charset = $config['charset']:'';
                 }
             }
         }
@@ -60,11 +61,13 @@ class Db
         switch ($this->type) {
             case 'mysql':
                 $this->link = mysqli_connect($this->host, $this->user, $this->password, $this->database);
+                mysqli_query("set names '{$this->charset}");
                 break;
             case 'PDO':
             default;
                 try{
                     $this->link = new $this->type($this->dns, $this->user, $this->password);
+                    $this->link -> exec("set names '{$this->charset}'");
                 }catch(PDOException $e){
                     echo $e->getMessage();
                 }
@@ -73,9 +76,6 @@ class Db
         }
     }
 
-//    private function verifyTable($table){
-//        return in_array($table,$this->tables)?true:false;
-//    }
     private function regLink()
     {
         Yaf_Registry::set($this->host, $this->link);
