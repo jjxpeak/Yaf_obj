@@ -9,14 +9,7 @@ class Db_Databases
 {
     private $link;
     private $sql;
-    private $where;
-    private $field;
-    private $table;
-    private $limit;
-    private $like;
-    private $group;
-    private $order;
-    private $mos;
+    private $mso;
 
     /**
      * Pdo constructor.
@@ -27,181 +20,235 @@ class Db_Databases
         $this->link = $link;
     }
 
-    public function select($talbe = '')
-    {
-        try {
-            if (empty($this->table) && $talbe == '') {
-                throw new PDOException('没有表名');
-            }
-            $this->mosaicSql();
-            $field = $this->field?$this->field:'*';
-            $this->mos->bindParam('_field',$field);
-            $this->mos->bindParam('_table',$this->table);
-            $this->where ? $this->mos->bindParam('_where' , $this->where) : '';
-            $this->limit ? $this->mos->bindParam('_limit' , $this->limit) : '';
-            $this->like  ? $this->mos->bindParam('_like' , $this->like) : '';
-            $this->group ? $this->mos->bindParam('_group' , $this->group) : '';
-            $this->order ? $this->mos->bindParam('_order' , $this->order) : '';
-            return $this->mos->execute();
-        } catch (PDOException $e) {
-            echo $e->getMessage();
-        }
-
-
-    }
-
-    /**获取表名
-     * @param String $table
-     * @return Object $this
-     */
-    public function table($table)
-    {
-        $this->table = $table;
-        return $this;
-    }
-
     /**
      * 获取最后一条sql
      * @return String
      */
     public function getLastSql()
     {
-        $field = !empty($this->field) ? $this->field : '*';
-        $where = !empty($this->where) ? ' WHERE ' . $this->where : '';
-        $like = !empty($this->like) ? ' LIKE ' . $this->like : '';
-        $order = !empty($this->order) ? ' ORDER BY ' . $this->order : '';
-        $group = !empty($this->group) ? ' GROUP BY ' . $this->group : '';
-        $limit = !empty($this->limit) ? ' LIMIT ' . $this->limit : '';
-        $sql = 'SELECT ' . $field . ' FROM  ' . $this->table . $where . $like . $order . $group . $limit;
-        $this->sql = $sql;
         return $this->sql;
     }
 
     /**
-     * 获取查询字段
-     * @return Object $this
-     */
-    public function field($field = NULL)
-    {
-        $field ? $field : $this->field = ' * ';
-        if (is_string($field)) {
-            $this->field = $field;
-        } else {
-            $this->field = ' * ';
-        }
-        return $this;
-    }
-
-    /**
+     * 查询
      * @param String $sql
-     * @return maxid
+     * @param int $type
+     * @return array $query
      */
-    protected function query($sql)
+    public function query($sql, $type = PDO::FETCH_ASSOC)
     {
 
         if (is_string($sql)) {
-            $reg = '/^(select) ([a-z0-9A-Z\,\.*]+) (from) (\`[a-z0-9A-Z]+\`|[a-z0-9A-Z]+)/i';
             try {
-                if (preg_match($reg, $sql)) {
-                    $this->sql = $sql;
-                    $query = $this->link->query($sql, PDO::FETCH_ASSOC);
-                    return $query->fetchAll();
-                };
+                $this->sql = $sql;
+                $this->mso = $this->link->prepare($sql);
+                $result = $this->mso->execute();
+                if ($result == false) {
+                    throw new PDOException($this->getError());
+                }
+                return $this->mso->fetchAll($type);
             } catch (PDOException $e) {
-                echo $e->getMessage();
+                $this->getErrorMessage($e);
                 exit;
             }
         } else {
             return NULL;
         }
-
-    }
-
-    protected function getAll($table, $field = '*', $where = '', $limit = '', $join = '', $order = '')
-    {
-        try {
-
-        } catch (PDOException $e) {
-            return $e->getMessage();
-        }
-
     }
 
     /**
+     * 更新操作
+     *
+     * @param string $table
+     * @param mixed $date
      * @param mixed $where
-     * @return Object $this
+     * @param string $sundry
+     * @return bool
      */
-    public function where($where = null)
+    public function update($table, $date, $where,$sundry = '')
     {
-        $exp = '';
-        $str = '';
-        if (!$where) return $this;
-        if (is_array($where) ) {
-            foreach ($where as $key => $value) {
-                if (is_array($value)) {
-                    foreach ($value as $e) {
+        $whereString = ' WHERE ';
+        $dateString = ' ';
+        $sqlWhere = ' WHERE ';
+        $sqlDate = ' ';
+        try{
 
-                        if (!$exp) {
-                            switch ($e) {
-                                case 'gt':
-                                    $exp = ' > ';
-                                    break;
-                                case 'lt':
-                                    $exp = ' < ';
-                                    break;
-                                case 'in':
-                                    $exp = ' in(::) ';
-                                    break;
-                                case 'egt':
-                                    $exp = ' >= ';
-                                    break;
-                                case 'elt':
-                                    $exp = ' <= ';
-                                    break;
-                                case 'neq':
-                                    $exp = ' != ';
-                                    break;
-                                case 'eq':
-                                default:
-                                    $exp = ' = ';
-                            }
-                        }
-                        if (strstr($exp, 'in') ) {
-                            $this->where = $key . str_replace('::', $e, $exp);
-                        }elseif(!in_array($e,['gt','lt','in','egt','elt','neq','eq'])){
-                            $this->where ? $this->where .= ' AND ' . $key.$exp.$e : $this->where = $key . $exp . $e . ' ';
-                        }
-//                        if(!empty($exp)) $exp = '';
-                    }
-                } else {
-                    $this->where? $this->where .=' AND '. $key . ' = ' . $value:$this->where = $key . ' = ' .$value;
+            if (empty($where) && !is_array($where)) {
+                return false;
+            }
+            if (empty($table) && !is_string($table)) {
+                return false;
+            }
+            if (empty($date) && !is_array($date)) {
+                return false;
+            }
+            if(is_string($where)){
+                $whereString .= $where;
+                $sqlWhere .= $where;
+            }elseif(is_array($where)){
+                foreach($where as $key => $value){
+                    $whereString .= " {$key} = :{$key} AND ";
+                    $sqlWhere .= $key . ' = ' .$value . ' AND ';
                 }
+                unset($key,$value);
+                $whereString = substr($whereString , 0 , -4);
+                $sqlWhere = substr($sqlWhere , 0 , -4);
+
             }
 
-        }elseif(is_string($where)){
-            $this->where = $where;
+            if(is_string($date)){
+                $dateString .= $date;
+                $sqlDate = $date;
+            }elseif(is_array($date)){
+                foreach($date as $key => $value){
+                    $dateString .= " {$key} = :{$key} , ";
+                    $sqlDate .= " {$key} = {$value} , ";
+                }
+                $dateString = substr($dateString , 0 , -2);
+                $sqlDate = substr($sqlDate , 0 , -2);
+            }
+            $sql = "UPDATE `{$table}` SET ".$dateString.$whereString.$sundry;
+            $this->sql = "UPDATE `{$table}` SET ".$sqlDate.$sqlWhere.$sundry;
+            $this->mso = $this->link->prepare($sql);
+            $this->bindSql($date);
+            $this->bindSql($where);
+            $re = $this->mso->execute();
+            if(!$re){
+                throw new PDOException($this->getError());
+            }else{
+                return $this->mso->rowCount();
+            }
+        }catch(PDOException $e){
+            $this->getErrorMessage($e);
+            exit;
         }
-        return $this;
     }
 
+    /**
+     * 删除行
+     * @param string $table
+     * @param mixed$where
+     * @return bool|int
+     */
+    public function delete($table,$where){
+
+        $deleteSql = '';
+        $deleteWhere = ' WHERE ';
+        if(empty($table) && empty($where)){
+            return false;
+        }
+        if(is_string($where)){
+            $deleteWhere .= $where;
+        }elseif(is_array($where)){
+            foreach($where as $key => $value){
+                $deleteWhere .= " {$key} = '{$value}' AND ";
+            }
+            $deleteWhere = substr($deleteWhere,0,-4);
+        }
+        $deleteSql .= "DELETE FROM `{$table}` {$deleteWhere}";
+        $this->sql = $deleteSql;
+        try{
+            $this->mso = $this->link->prepare($deleteSql);
+            $re = $this->mso->execute();
+            if(!$re){
+                throw new PDOException($this->getError());
+            }else{
+                return $this->mso->rowCount();
+            }
+        }catch (PDOException $e){
+            $this->getErrorMessage($e);
+            exit;
+        }
+
+    }
+
+    public function insert($table,$date){
+
+        $sqlStr = '';
+        $listStr = '';
+        $bindListStr = '';
+        $listSql = '';
+        $bindSql = '';
+        if(empty($table) && empty($date)) return false ;
+        if(is_array($date)){
+            foreach($date as $key => $value){
+                $listStr .= $key . ', ';
+                $bindListStr .= '\':'.$key.'\' , ';
+                $listSql .= $key.', ';
+                $bindSql .=  '\''.$value. '\', ';
+            }
+            $listStr = substr($listStr , 0 , -2);
+            $bindListStr = substr($bindListStr , 0 , -2);
+            $listSql = substr($listSql , 0 , -2);
+            $bindSql = substr($bindSql , 0 , -2);
+        }
+
+        $this->sql = "INSERT INTO `{$table}` ( {$listSql} ) VALUES ( $bindSql )";
+        $sqlStr .= "INSERT INTO `{$table}` ( {$listStr} ) VALUES ( $bindListStr )";
+
+        try{
+            $this->mso = $this->link->prepare($sqlStr);
+            $this->bindSql($date);
+            $this->mso->execute();
+            echo $this->link->lastInsertId();
+            $re =$this->link->exec($sqlStr);
+            if(!$re){
+                throw new PDOException($this->getError());
+            }else{
+                return $re;
+            }
+        }catch(PDOException $e){
+            $this->getErrorMessage($e);
+            exit;
+        }
+    }
 
     /**
-     * 拼接SQL
-     * @return void
+     * 绑定参数
+     * @param array $date
      */
-    private function mosaicSql()
-    {
-        $where = !empty($this->where) ? ' WHERE _where ' : '';
-        $like = !empty($this->like) ? ' LIKE _linke' : '';
-        $order = !empty($this->order) ? ' ORDER BY _order ' : '';
-        $group = !empty($this->group) ? ' GROUP BY _group ' : '';
-        $limit = !empty($this->limit) ? ' LIMIT _limit ' : '';
-        $sql = 'SELECT _field FROM _table ' . $where . $like . $order . $group . $limit;
-        try {
-            $this-> mos = $this->link->prepare($sql);
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+    private function bindSql($date){
+        if(!is_string($date)) {
+            foreach ($date as $key => $value) {
+                $this->mso->bindParam(":{$key}", $value);
+            }
         }
+    }
+
+    /**
+     * 获取错误信息
+     * @return string
+     */
+    private function getError()
+    {
+
+        $errorInfo = $this->mso->errorInfo();
+        $errorMessage = '<b>[ 错误信息 ] : </b>' . ' [No] ' . $errorInfo[1] . ' : ' . $errorInfo[2] . '</br>';
+        if ($this->sql) {
+            $errorMessage .= "\n<b>[ SQL语句 ] : </b> " . $this->sql . '</br>';
+        }
+        return $errorMessage;
+    }
+
+    /**
+     * 输出错误信息
+     * @param PDOException $e
+     */
+    private function getErrorMessage($e)
+    {
+        $str = $e->getMessage();
+        $str .= "\n<b>[ 文件位置 ] : </b> " . $e->getFile() . '</br>';
+        $str .= "\n<b>[ TRACE ] : </b><p>" . $e->getTraceAsString() . '</p>';
+        echo $str;
+    }
+
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+        if($this->mso){
+            $this->mso = NULL;
+        }
+        $this->link = NUll;
     }
 
 }

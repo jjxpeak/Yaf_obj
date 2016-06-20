@@ -16,8 +16,9 @@ class indexController extends Yaf_Controller_Abstract
         $this->model = new Model($db);
     }
     public function indexAction(){
-        var_dump($this->model->test());
-        $this -> view -> assign('content','test');
+        $test =$this->model->test();
+//        $this -> view -> assign('content',$test);
+//        $this -> view -> assign('test',$test);
     }
 
 }

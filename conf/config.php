@@ -13,4 +13,5 @@ return array(
     "user" => "root",
     "password" => "root",
     "database" => "world",
+//    "charset" => "latin1",
 );

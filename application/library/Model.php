@@ -14,9 +14,11 @@ class Model extends Db_Databases
 
     public function test()
     {
-        $where = array('id'=>array('in','1,2,3'));
-        $this->table('city');
-        var_dump($this->select());
+        echo '<pre>';
+        $re = $this->insert('city',['name' => 'peak3','CountryCode'=>'PSE','district'=>'test','population'=> 000]);
+
+        var_dump($re);
+        echo $this->getLastSql();
         return $this->getLastSql();
     }
 }

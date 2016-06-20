@@ -67,7 +67,7 @@ class Db
             default;
                 try{
                     $this->link = new $this->type($this->dns, $this->user, $this->password);
-                    $this->link -> exec("set names '{$this->charset}'");
+//                    $this->link -> exec("set names '{$this->charset}'");
                 }catch(PDOException $e){
                     echo $e->getMessage();
                 }
