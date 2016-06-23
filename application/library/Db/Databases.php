@@ -10,7 +10,7 @@ class Db_Databases
     private $link;
     private $sql;
     private $mso;
-
+    private $date = [];
     /**
      * Pdo constructor.
      * @param Pdo $link
@@ -38,7 +38,7 @@ class Db_Databases
     public function query($sql, $type = PDO::FETCH_ASSOC)
     {
 
-        if (is_string($sql)) {
+        if (is_string($sql) && preg_match_all('/^select/i',$sql)) {
             try {
                 $this->sql = $sql;
                 $this->mso = $this->link->prepare($sql);
@@ -65,7 +65,7 @@ class Db_Databases
      * @param string $sundry
      * @return bool
      */
-    public function update($table, $date, $where,$sundry = '')
+    public function update($table, $date = array(), $where,$sundry = '')
     {
         $whereString = ' WHERE ';
         $dateString = ' ';
@@ -79,9 +79,10 @@ class Db_Databases
             if (empty($table) && !is_string($table)) {
                 return false;
             }
-            if (empty($date) && !is_array($date)) {
+            if (empty($date) && !is_array($date) || empty($this->date)) {
                 return false;
             }
+            !empty($this->date) && $date = array_merge($date,$this->date);
             if(is_string($where)){
                 $whereString .= $where;
                 $sqlWhere .= $where;
@@ -162,6 +163,14 @@ class Db_Databases
 
     }
 
+
+
+    /**
+     * 添加行
+     * @param $table
+     * @param $date
+     * @return bool
+     */
     public function insert($table,$date){
 
         $sqlStr = '';
@@ -171,31 +180,31 @@ class Db_Databases
         $bindSql = '';
         if(empty($table) && empty($date)) return false ;
         if(is_array($date)){
+            !empty($this->date) && $date = array_merge($date,$this->date);
             foreach($date as $key => $value){
                 $listStr .= $key . ', ';
-                $bindListStr .= '\':'.$key.'\' , ';
-                $listSql .= $key.', ';
-                $bindSql .=  '\''.$value. '\', ';
+                $bindListStr .= ':'.$key.', ';
+                $listSql .= '\''.$key.'\' , ';
+                $bindSql .=  $value. ', ';
             }
             $listStr = substr($listStr , 0 , -2);
             $bindListStr = substr($bindListStr , 0 , -2);
             $listSql = substr($listSql , 0 , -2);
             $bindSql = substr($bindSql , 0 , -2);
+        }else{
+            return false;
         }
 
         $this->sql = "INSERT INTO `{$table}` ( {$listSql} ) VALUES ( $bindSql )";
         $sqlStr .= "INSERT INTO `{$table}` ( {$listStr} ) VALUES ( $bindListStr )";
-
         try{
             $this->mso = $this->link->prepare($sqlStr);
             $this->bindSql($date);
-            $this->mso->execute();
-            echo $this->link->lastInsertId();
-            $re =$this->link->exec($sqlStr);
+            $re =  $this->mso->execute();
             if(!$re){
                 throw new PDOException($this->getError());
             }else{
-                return $re;
+               return $this->mso->rowCount();
             }
         }catch(PDOException $e){
             $this->getErrorMessage($e);
@@ -204,13 +213,43 @@ class Db_Databases
     }
 
     /**
+     * 执行SQL
+     * @param $sql
+     * @return bool
+     */
+    public function exec($sql){
+        if(!is_string($sql) && preg_match_all('/^[select|update|insert]/i',$sql)) return false;
+        $this->mso = $this->link->prepare($sql);
+        try{
+            if($this->mso->execute()){
+                return true;
+            }else{
+                throw new PDOException($this->getError());
+            }
+        }catch(PDOException $e){
+            $this->getErrorMessage($e);
+        }
+    }
+
+    public function __set($name,$value)
+    {
+        $this->date[$name] = $value;
+    }
+
+    public function __get($name)
+    {
+        return $this->date[$name];
+    }
+
+
+    /**
      * 绑定参数
      * @param array $date
      */
     private function bindSql($date){
         if(!is_string($date)) {
             foreach ($date as $key => $value) {
-                $this->mso->bindParam(":{$key}", $value);
+                $this->mso->bindValue(':'.$key , $value);
             }
         }
     }
@@ -240,6 +279,7 @@ class Db_Databases
         $str .= "\n<b>[ 文件位置 ] : </b> " . $e->getFile() . '</br>';
         $str .= "\n<b>[ TRACE ] : </b><p>" . $e->getTraceAsString() . '</p>';
         echo $str;
+        exit;
     }
 
     public function __destruct()
