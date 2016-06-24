@@ -1,47 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>HelloWord</title>
-    <link rel="stylesheet" href="./css/common.css">
-    <style type="text/css">
-        .navi{
-            height: 100px;
-            width: 40%;
-            position: relative;
-            margin:0 auto;
-        }
-        .navi ul{
-           /*margin-left: 30%;*/
-        }
-        .navi_li a{
-            float: left;
-            font-size: 30px;
-            font-family:'Microsoft Yahei', Helvetica, 'Hiragino Sans GB',  '微软雅黑', Arial, sans-serif;
-            align-content: center;
-            margin: 30px 20px;
-        }
-        .navi_li {
-            margin-left: 210px;
-        }
+<?php include (__DIR__.'/../public/header.html');?>
+<link rel="stylesheet" href="./css/swiper.min.css">
+<style type="text/css">
+    .content {
+        text-align: center;
+        font-family:"Regular";
+    }
+    .swipebox_1{
+        background:url("./img/banner-1.jpg") no-repeat;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        -ms-background-size: cover;
+        min-height: 780px;
+    }
+    .swipebox_2{
+        background:url("./img/banner-2.jpg") no-repeat;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        -ms-background-size: cover;
+        min-height: 780px;
+    }
+    .swipebox_3{
+        background:url("./img/banner-3.jpg") no-repeat;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        -ms-background-size: cover;
+        min-height: 780px;
+    }
 
-        .clear {
-            clear: none;
-        }
-        .logo{
-            position: absolute;
-        }
-    </style>
-</head>
-<body>
-<div class="navi">
-    <ul>
-        <li class="logo"><img src="./img/Logo.png" alt="logo" title="logo" width="200px"></li>
-        <li class="navi_li clear"><a href="#">首页</a></li>
-        <li class="navi_li clear"><a href="#">关于我</a></li>
-        <li class="navi_li clear"><a href="#">学习相关</a></li>
-        <li class="navi_li clear"><a href="#">每日一记</a></li>
-    </ul>
+</style>
+<div class="swiper-container content">
+   <div class="swiper-wrapper">
+       <div class="swipebox_2 swiper-slide"><h1>贾俊新的主页</h1></div>
+       <div class="swipebox_1 swiper-slide"></div>
+       <div class="swipebox_3 swiper-slide"></div>
+   </div>
+    <div class="swiper-pagination"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
 </div>
-</body>
-</html>
+<script src="./js/swiper.jquery.min.js"></script>
+<script language="javascript">
+        var swiper = new Swiper('.swiper-container',{
+            initialSlide :0,
+            nextButton: '.swiper-button-next',
+            prevButton: '.swiper-button-prev',
+            pagination: '.swiper-pagination',
+        })
+
+</script>
+<?php include (__DIR__.'/../public/footer.html'); ?>

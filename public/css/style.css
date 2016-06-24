@@ -1,0 +1,164 @@
+/*--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+--*/
+html, body {
+    font-family: 'Raleway', sans-serif;
+    font-size: 100%;
+    background: #FFf;
+}
+
+body a, .grid_1, plan_1, plan_1.one, plan_1.two, i.icon1, i.icon2, i.icon3, i.icon4, i.icon5, i.icon6 {
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+input[type="button"], input[type="submit"], li.parallelogram {
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+p {
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+label {
+    margin: 0;
+}
+
+.logo {
+    float: left;
+}
+
+.logo a img {
+    color: #333;
+    font-size: 4em;
+    margin-top: 5px;
+    font-weight: 700;
+    font-family: 'Tangerine', cursive;
+
+}
+
+.logo a h1:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.logo a h1 span {
+    color: #ea4c89;
+}
+
+.top-menu {
+    text-align: center;
+    margin-top: 1.2em;
+    float: right;
+}
+
+.top-menu ul li {
+    display: inline-block;
+    margin: 0 5px;
+    color: #fff;
+    font-weight: 900;
+    vertical-align: top;
+}
+
+nav a {
+    position: relative;
+    display: inline-block;
+    outline: none;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+    font-size: 1em;
+}
+
+nav a:hover,
+nav a:focus {
+    outline: none;
+}
+
+.top-menu ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.2em;
+    font-weight: 400;
+    font-family:"Microsoft YaHei" , "Microsoft JhengHei" ,"STHeiti Light";
+    padding: 8px 0 0 0;
+    width: 103px;
+    height: 37px;
+    background: #fff;
+    margin: 0 auto;
+    transform: skew(-10deg);
+    -o-transform: skew(-10deg);
+    -moz-transform: skew(-10deg);
+    -webkit-transform: skew(-10deg);
+}
+
+.top-menu ul li a:hover, .top-menu ul li a.active {
+    background: #333;
+    color: #fff;
+}
+
+@media (max-width: 768px) {
+    span.menu {
+        width: 35px;
+        height: 35px;
+        background: url(../img/nav.png) no-repeat 0px 0px;
+        display: inline-block;
+        float: right;
+        cursor: pointer;
+        margin-top: 21px;
+    }
+
+    .top-menu {
+        width: 100%;
+        display: none;
+        text-align: center;
+        background: #fff;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .span_2 {
+        margin-top: 2em;
+    }
+
+    .top-menu ul {
+        float: none;
+        width: 100%;
+    }
+
+    .top-menu ul li {
+        display: block;
+        float: none;
+        margin: 5px 0;
+    }
+
+    .logo {
+        width: 27.5%;
+    }
+}

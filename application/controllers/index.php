@@ -14,8 +14,12 @@ class indexController extends Yaf_Controller_Abstract
         $host = Yaf_Registry::get('host');
         $db = Yaf_Registry::get($host);
         $this->model = new Model($db);
+        if($this->getRequest()->isXmlHttpRequest()){
+            Yaf_Dispatcher::getInstance()->disableView();
+        }
     }
     public function indexAction(){
+//       $this->view->getView();
     }
 
 }
