@@ -70,6 +70,7 @@ class Db
 //                    $this->link -> exec("set names '{$this->charset}'");
                 }catch(PDOException $e){
                     echo $e->getMessage();
+                    exit;
                 }
 
 

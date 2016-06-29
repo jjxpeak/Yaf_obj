@@ -1,4 +1,4 @@
-<?php include (__DIR__.'/../public/header.html');?>
+<?php include HEADER_PATH; ?>
 <link rel="stylesheet" href="./css/swiper.min.css">
 <style type="text/css">
     .content {
@@ -36,22 +36,21 @@
 </style>
 <div class="swiper-container content">
    <div class="swiper-wrapper">
-       <div class="swipebox_2 swiper-slide"><h1>贾俊新的主页</h1></div>
+       <div class="swipebox_2 swiper-slide"><!--<h1><a href="index">欢迎来到Peak的主页</a></h1>--></div>
        <div class="swipebox_1 swiper-slide"></div>
        <div class="swipebox_3 swiper-slide"></div>
    </div>
     <div class="swiper-pagination"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
 </div>
 <script src="./js/swiper.jquery.min.js"></script>
 <script language="javascript">
         var swiper = new Swiper('.swiper-container',{
             initialSlide :0,
-            nextButton: '.swiper-button-next',
-            prevButton: '.swiper-button-prev',
             pagination: '.swiper-pagination',
+            slidesPerView: 1,
+            paginationClickable: true,
+            mousewheelControl: true,
         })
 
 </script>
-<?php include (__DIR__.'/../public/footer.html'); ?>
+<?php include FOOTER_PATH; ?>
