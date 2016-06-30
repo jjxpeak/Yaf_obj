@@ -3,12 +3,39 @@
     .footer{
       margin-top: 17%;
     }
+    .input-group{
+        width: 400px;
+    }
+    .btn-group{
+
+        margin-top: 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 </style>
-<div class="container">
-    <div class="container jumbotron" align="center">
-        <h1>Hello!</h1>
-        <p>你需要登陆才可以添加日记</p>
-        <p><a href="" class="btn btn-primary btn-lg btn-siz" role="button">Sign In</a></p>
+
+    <div class="container" style="display: block;" id="content">
+        <div class="container jumbotron content_postition" >
+            <h1>Hello!</h1>
+            <p>你需要登陆才可以添加日记</p>
+            <p><a href="javascript:login();"  class="btn btn-primary btn-lg" role="button">Sign In</a></p>
+        </div>
     </div>
+<div class=" container input-group " style="display: none" id="login_input">
+    <div class="input-group input-group-lg container">
+        <span class="input-group-addon" id="sizing-addon1">UserName</span>
+        <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+    </div>
+    <div class="input-group input-group-lg container">
+        <span class="input-group-addon" id="sizing-addon1">Password</span>
+        <input type="password" class="form-control" placeholder="Password" aria-describedby="sizing-addon1">
+    </div>
+    <p align="right"><a href="javascript:void();" onclick="login()" class="btn btn-primary btn-lg btn-group" role="button">Sign In</a> <a href="javascript:void();" onclick="login()" class="  btn-lg btn btn-default btn-group" role="button">Sign In</a></p>
 </div>
+<script type="text/javascript">
+    function login(){
+        $('#content').css('display','none');
+        $('#login_input').css('display','block');
+    }
+</script>
 <?php require FOOTER_PATH ;?>
