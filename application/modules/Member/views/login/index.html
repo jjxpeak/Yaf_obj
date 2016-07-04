@@ -1,0 +1,73 @@
+<?php require HEADER_PATH ;?>
+<style type="text/css">
+    .footer{
+      margin-top: 17%;
+    }
+    .input-group{
+        width: 400px;
+    }
+    .btn-group{
+
+        margin-top: 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+</style>
+
+    <div class="container" style="display: block;" id="content">
+        <div class="container jumbotron content_postition" >
+            <h1>Hello!</h1>
+            <p>你需要登陆才可以添加日记</p>
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+               登 陆
+            </button>
+        </div>
+    </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">登陆</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group input-group-lg container">
+                    <span class="input-group-addon" >UserName</span>
+                    <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+                </div>
+                <div class="input-group input-group-lg container">
+                    <span class="input-group-addon">Password</span>
+                    <input type="password" class="form-control" placeholder="Password" aria-describedby="sizing-addon1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick = "ajax_login()" title="Login State" data-placement="top" data-toggle="popover" data-content="" id = "massage">登陆</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    })
+    function ajax_login(){
+        var user = $('input:text').val();
+        var pass = $('input:password').val();
+        if (!user && !pass){
+            return false
+        }
+        $.ajax({
+            url:'<?php echo PUBLIC_PATH; ?>/member/login/act',
+            type:"post",
+            dataType:"json",
+            data:{'username':user,'password':pass},
+            cache:false,
+            success:function(d){
+                $('#massage').attr('data-content', d.massage);
+
+            }
+         });
+    }
+</script>
+<?php require FOOTER_PATH ;?>

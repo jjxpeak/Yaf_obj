@@ -2,11 +2,17 @@
 <link rel="stylesheet" href="./css/swiper.min.css">
 <style type="text/css">
     .content {
-        text-align: center;
-        font-family:"Regular";
+        font-family: "Regular";
     }
-    .swipebox_1{
-        background:url("./img/banner-1.jpg") no-repeat;
+    .content>p {
+       margin-top: 20px;
+    }
+    .bg{
+        background-color: transparent ;
+        border-bottom: 0px;
+    }
+    .swipebox_1 {
+        background: url("./img/banner-1.jpg") no-repeat;
         background-size: cover;
         -webkit-background-size: cover;
         -moz-background-size: cover;
@@ -14,8 +20,9 @@
         -ms-background-size: cover;
         min-height: 780px;
     }
-    .swipebox_2{
-        background:url("./img/banner-2.jpg") no-repeat;
+
+    .swipebox_2 {
+        background: url("./img/banner-2.jpg") no-repeat;
         background-size: cover;
         -webkit-background-size: cover;
         -moz-background-size: cover;
@@ -23,8 +30,9 @@
         -ms-background-size: cover;
         min-height: 780px;
     }
-    .swipebox_3{
-        background:url("./img/banner-3.jpg") no-repeat;
+
+    .swipebox_3 {
+        background: url("./img/banner-3.jpg") no-repeat;
         background-size: cover;
         -webkit-background-size: cover;
         -moz-background-size: cover;
@@ -34,23 +42,43 @@
     }
 
 </style>
-<div class="swiper-container content">
-   <div class="swiper-wrapper">
-       <div class="swipebox_2 swiper-slide"><!--<h1><a href="index">欢迎来到Peak的主页</a></h1>--></div>
-       <div class="swipebox_1 swiper-slide"></div>
-       <div class="swipebox_3 swiper-slide"></div>
-   </div>
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swipebox_2 swiper-slide">
+            <div class="container" style="display: block;" id="content">
+                <div class="page-header jumbotron bg">
+                    <h1>Hello! <small>欢迎来到 Peak 的主页!</small></h1>
+                </div>
+            </div>
+        </div>
+        <div class="swipebox_1 swiper-slide">
+            <div class="container" style="display: block;" >
+                <div class="container jumbotron content bg" >
+                    <h1>个人简介</h1>
+                    <p>姓名：<b>贾俊新</b></p>
+                    <p>职业：<apan>PHP码农</apan></p>
+                    <p>年龄：<apan>二十七八</apan></p>
+                    <p>相关技能：</p>
+                    <p>
+                        &nbsp;&nbsp;后端：php基础语法,Yaf框架，ThinkPHP框架,smart模板<br>
+                        &nbsp;&nbsp;前端：HTML语法,jQuery库<br>
+                    </p>
+                    <p>总结：1年多至今在搬砖</p>
+                </div>
+            </div>
+        </div>
+        <!--<div class="swipebox_3 swiper-slide"></div>-->
+    </div>
     <div class="swiper-pagination"></div>
 </div>
 <script src="./js/swiper.jquery.min.js"></script>
 <script language="javascript">
-        var swiper = new Swiper('.swiper-container',{
-            initialSlide :0,
-            pagination: '.swiper-pagination',
-            slidesPerView: 1,
-            paginationClickable: true,
-            mousewheelControl: true,
-        })
-
+    var swiper = new Swiper('.swiper-container', {
+        initialSlide: 0,
+        pagination: '.swiper-pagination',
+        slidesPerView: 1,
+        paginationClickable: true,
+        mousewheelControl: true,
+    })
 </script>
 <?php include FOOTER_PATH; ?>
