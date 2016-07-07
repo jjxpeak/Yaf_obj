@@ -38,6 +38,7 @@ class Db_Databases
     public function query($sql, $type = PDO::FETCH_ASSOC)
     {
         if (is_string($sql) && preg_match_all('/^select/i',$sql)) {
+
             try {
                 $this->sql = $sql;
                 $this->mso = $this->link->prepare($sql);

@@ -7,8 +7,10 @@
  */
 class Model extends Db_Databases
 {
-    public function __construct($link)
+    public function __construct()
     {
-        parent::__construct($link);
+        $host = Yaf_Registry::get('host');
+        $db = Yaf_Registry::get($host);
+        parent::__construct($db);
     }
 }

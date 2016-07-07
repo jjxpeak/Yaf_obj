@@ -23,15 +23,18 @@ class loginController extends Yaf_Controller_Abstract
     }
 
     public function indexAction(){
-
+        $returnUrl = !empty($_GET['returnUrl']) ?$_GET['returnUrl']:'';
+        $this->view->assign('returnUrl',$returnUrl);
     }
     public function actAction(){
+
         if(!isset($_POST['username']) && !isset($_POST['password']) && !is_string($_POST['password']) && !is_string($_POST['username']) ) return false;
         $user = $_POST['username'];
         $pass = md5($_POST['password']);
-        $userInfo = $this->model->query("SELECT * FROM `user` WHERE username = '$user' AND password = '$pass' ");
-        if($userInfo){
-            $_SESSION['userInfo'] = $userInfo;
+        $userLink= new Index_User();
+        $info = $userLink->getUserInfo($user,$pass,'id,username,password');
+        if($info){
+            $_SESSION['userInfo'] = $info;
             $data = array(
                 'massage'=>'登陆成功',
                 'state' => 1
