@@ -9,6 +9,5 @@ class Uploader
 {
     public function __construct()
     {
-        require  APPLICATION_PATH.'application/library/pnp/controller.php';
     }
 }

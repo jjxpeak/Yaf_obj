@@ -10,14 +10,6 @@ html, body {
     background: #FFf;
 }
 
-body a, .grid_1, plan_1, plan_1.one, plan_1.two, i.icon1, i.icon2, i.icon3, i.icon4, i.icon5, i.icon6 {
-    transition: 0.5s all;
-    -webkit-transition: 0.5s all;
-    -moz-transition: 0.5s all;
-    -o-transition: 0.5s all;
-    -ms-transition: 0.5s all;
-}
-
 a:hover {
     text-decoration: none;
 }
