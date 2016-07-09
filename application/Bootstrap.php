@@ -19,6 +19,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
      */
     public function _initConfig(Yaf_Dispatcher $dispatcher){
         //ini_set('yaf.thowException' , 1);
+        session_start();
         $config = require( CONFIG_PATH."config.php") ;
         $this->_config = Yaf_Application::app()->getConfig();
         Yaf_Registry::set("config" , $config);
@@ -32,16 +33,6 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
 
         $config = Yaf_Registry::get('config');
         new Db($config);
-    }
-
-    /**
-     * 注册加密类
-     * @param Yaf_Dispatcher $dispatcher
-     */
-    public function __initSerurity(Yaf_Dispatcher $dispatcher)
-    {
-        $secunrity = new Security();
-        Yaf_Registry::set('secunrity', $secunrity);
     }
 
     /**

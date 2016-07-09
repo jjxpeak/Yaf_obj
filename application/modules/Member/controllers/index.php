@@ -22,14 +22,20 @@ class indexController extends Yaf_Controller_Abstract
             }
         } else {
             header("HTTP/1.1 302 Moved Permanently");
-            header('Location:'.$_SERVER['HOST_NAME'] . ROOT_PATH . '/member/login/index?returnUrl=' .urlencode($_SERVER['HOST_NAME'].$_SERVER['PATH_INFO']));
-//            $this->forward('Member','Login','index');
+            header('Location:'.$_SERVER['HOST_NAME'] . '/member/login/index?returnUrl=' .urlencode($_SERVER['HOST_NAME'].$_SERVER['PATH_INFO']));
         }
     }
 
 
     public function indexAction()
     {
+    }
 
+    public function saveContentAction()
+    {
+       $html =  htmlspecialchars($_POST['content']);
+       echo  htmlspecialchars_decode($html);
+       echo '<hr>';
+       echo $html;
     }
 }

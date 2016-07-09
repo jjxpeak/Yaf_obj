@@ -54,7 +54,7 @@
             return false
         }
         $.ajax({
-            url:'<?php echo PUBLIC_PATH; ?>/member/login/act',
+            url:'/member/login/act',
             type:"post",
             dataType:"json",
             data:{'username':user,'password':pass},

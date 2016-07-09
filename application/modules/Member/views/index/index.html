@@ -1,10 +1,39 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-
-</body>
-</html>
+<?php include HEADER_PATH; ?>
+<!-- ueditor include start -->
+<script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+<script type="text/javascript">
+    var ue = UE.getEditor('container');
+</script>
+<style type="text/css">
+    .footer{
+        margin-top: 17%;
+    }
+    #container{
+        /*height: 300px;*/
+        width: 600px;
+        z-index: 0;
+        margin:10px auto;
+    }
+    .submit{
+        width: 600px;
+        margin: 10px auto;
+    }
+    #submit{
+        float: right;
+    }
+</style>
+<!-- ueditor include end -->
+    <form action="/member/index/saveContent" method="post">
+        <script id="container" name="content" type="text/plain">
+        这里写你的初始化内容
+        </script>
+        <div class="submit">
+            <button type="submit" id="submit" class="btn btn-primary" autocomplete="off">
+                提交
+            </button>
+        </div>
+    </form>
+<script type="text/javascript">
+</script>
+<?php include FOOTER_PATH; ?>

@@ -16,7 +16,6 @@ class loginController extends Yaf_Controller_Abstract
         $host = Yaf_Registry::get('host');
         $db = Yaf_Registry::get($host);
         $this->model = new Model($db);
-        session_start();
         if ($this->getRequest()->isXmlHttpRequest()) {
             Yaf_Dispatcher::getInstance()->disableView();
         }
@@ -27,12 +26,17 @@ class loginController extends Yaf_Controller_Abstract
         $this->view->assign('returnUrl',$returnUrl);
     }
     public function actAction(){
-
+        if($_SESSION['num'] > 4){
+            $data = array('massage'=>'尝试次数太多了！！','state'=>0);
+            ajax_massage($data);
+        }
         if(!isset($_POST['username']) && !isset($_POST['password']) && !is_string($_POST['password']) && !is_string($_POST['username']) ) return false;
         $user = $_POST['username'];
-        $pass = md5($_POST['password']);
+        $pass = encrypt(md5($_POST['password']),WEB_KEY);
+        $_SESSION['num'] +=1;
         $userLink= new Index_User();
         $info = $userLink->getUserInfo($user,$pass,'id,username,password');
+
         if($info){
             $_SESSION['userInfo'] = $info;
             $data = array(
@@ -42,7 +46,6 @@ class loginController extends Yaf_Controller_Abstract
         }else{
             $data = array('massage'=>'用户名或密码错误！','state'=>0);
         }
-        echo json_encode($data);
-        exit;
+        ajax_massage($data);
     }
 }

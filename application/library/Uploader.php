@@ -7,7 +7,8 @@
  */
 class Uploader
 {
-    function index(){
-        die(__CLASS__);
+    public function __construct()
+    {
+        require  APPLICATION_PATH.'application/library/pnp/controller.php';
     }
 }
