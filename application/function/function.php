@@ -36,11 +36,11 @@ function decrypt($sStr, $sKey) {
     return $decrypted;
 }
 
-function ajax_massage($date){
-    if(is_array($date)){
-        $massage = json_encode($date);
+function ajax_massage($data){
+    if(is_array($data)){
+        $massage = json_encode($data);
     }else{
-        $massage = $date;
+        $massage = $data;
     }
     exit($massage);
 }

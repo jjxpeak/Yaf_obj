@@ -5,9 +5,7 @@
 <script type="text/javascript">
     var ue = UE.getEditor('container');
 </script>
-<!-- ueditor include end -->
 <style type="text/css">
-
     #container {
         /*height: 300px;*/
         width: 600px;
@@ -23,18 +21,42 @@
     #submit {
         float: right;
     }
+    .form-text{
+        width:200px;
+        display: inline;
+    }
+    .form-function{
+        padding-left:70px;
+    }
 </style>
 
 <div class="container">
     <div class="row">
         <?php include 'menu_left.html'; ?>
-        <div class="col-md-8">
+        <div class="col-md-8" id="content">
 
             <form action="/member/index/saveContent" method="post">
-                <script id="container" name="content" type="text/plain">
-        这里写你的初始化内容
-
-                </script>
+                <div class="form-function">
+                    <div class="form-group row">
+                        <label class="col-md-2" >标题</label>
+                        <input type="text" class="form-control form-text " name="title">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2" >介绍</label>
+                        <input type="text" class="form-control form-text" name="introduce">
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2" >所属栏目</label>
+                        <select class="form-control form-text" name="group" id="group" onclick="clickSelect()">
+                        </select>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2" >所属分类</label>
+                        <select class="form-control form-text" name="category" id="category">
+                        </select>
+                    </div>
+                </div>
+                <script id="container" name="content" type="text/plain"></script>
                 <div class="submit">
                     <button type="submit" id="submit" class="btn btn-primary" autocomplete="off">
                         提交
@@ -45,5 +67,25 @@
     </div>
 </div>
 <script type="text/javascript">
+    var genus =<?php echo $category ?>;
+    var group = document.getElementById('group');
+    var category = document.getElementById('category');
+    for (var o in genus){
+        if(genus[o]['Grade'] == 1 && genus[o]['type'] == 0 ){
+            group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
+        }
+        if(group.value == genus[o]['cid']){
+            category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
+        }
+    }
+
+    function clickSelect(){
+        category.length=0;
+        for (var v in genus){
+            if(group.value == genus[v]['cid']){
+                category.options[category.length] = new Option(genus[v]['name'], genus[v]['id']);
+            }
+        }
+    }
 </script>
 <?php include FOOTER_PATH; ?>

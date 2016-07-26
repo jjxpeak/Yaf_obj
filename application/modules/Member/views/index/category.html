@@ -1,0 +1,92 @@
+<?php include HEADER_PATH; ?>
+<style type="text/css">
+    select {
+        font-family:;
+        width: 100%;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <?php include 'menu_left.html'; ?>
+        <div class="col-md-4" style="height:300px;">
+            <select name="group" id="group" onclick="clickSelect()" class="" multiple="multiple" size="15">
+            </select>
+        </div>
+        <div class="col-md-4" style="height:300px;">
+            <select name="category" id="category" class="" multiple="multiple" size="15">
+            </select>
+        </div>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-default" type="button" onclick="delGroup(document.getElementById('group'))">删除父级分类
+            </button>
+            <button class="btn btn-default" type="button">添加父级分类</button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-default" type="button" onclick="delGroup(document.getElementById('category'))">删除子分类</button>
+            <button class="btn btn-default" type="button">添加子分类</button>
+        </div>
+    </div>
+</div>
+<?php include FOOTER_PATH; ?>
+<script type="application/javascript">
+    var genus =<?php echo $category ?>;
+    var group = document.getElementById('group');
+    var category = document.getElementById('category');
+    for (var o in genus) {
+        if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
+            group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
+        }
+        if (group.value == genus[o]['cid']) {
+            category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
+        }
+    }
+
+    function clickSelect() {
+        category.length = 0;
+        for (var v in genus) {
+            if (group.value == genus[v]['cid']) {
+                category.options[category.length] = new Option(genus[v]['name'], genus[v]['id']);
+            }
+        }
+    }
+
+    function delGroup(i) {
+        if(!category.length || i == category ){
+            if (i.value) {
+                $.ajax({
+                    url: '/Member/Index/delGroup',
+                    type: "post",
+                    dataType: "json",
+                    data: {"cid": i.value, 'genus': genus},
+                    cache: false,
+                    success: function (d) {
+                        if (d.status == 1) {
+                            genus = d.genus;
+                            group.length = 0;
+                            for (var o in genus){
+                                if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
+                                    group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
+                                }
+                                if (group.value == genus[o]['cid']) {
+                                    category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
+                                }
+                            }
+                        } else {
+                            alert(d.message);
+                        }
+                    }
+                });
+            } else {
+                alert('请选择父级分类');
+            }
+        }else{
+            alert('该类有子分类');
+        }
+    }
+
+
+</script>

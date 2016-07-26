@@ -79,7 +79,7 @@ class Db_Databases
             if (empty($table) && !is_string($table)) {
                 return false;
             }
-            if (empty($date) && !is_array($date) || empty($this->date)) {
+            if (empty($date) && !is_array($date) || !empty($this->date)) {
                 return false;
             }
             !empty($this->date) && $date = array_merge($date,$this->date);
@@ -114,6 +114,7 @@ class Db_Databases
             $this->bindSql($date);
             $this->bindSql($where);
             $re = $this->mso->execute();
+
             if(!$re){
                 throw new PDOException($this->getError());
             }else{

@@ -8,24 +8,22 @@
  */
 class loginController extends Yaf_Controller_Abstract
 {
-    private $model;
     private $view;
     public function init()
     {
         $this->view = $this->initView()->_view;
-        $host = Yaf_Registry::get('host');
-        $db = Yaf_Registry::get($host);
-        $this->model = new Model($db);
         if ($this->getRequest()->isXmlHttpRequest()) {
             Yaf_Dispatcher::getInstance()->disableView();
         }
     }
 
     public function indexAction(){
+        unset($_SESSION['userInfo']);
         $returnUrl = !empty($_GET['returnUrl']) ?$_GET['returnUrl']:'';
         $this->view->assign('returnUrl',$returnUrl);
     }
     public function actAction(){
+        $_SESSION['num'] = 0;
         if($_SESSION['num'] > 4){
             $data = array('massage'=>'尝试次数太多了！！','state'=>0);
             ajax_massage($data);

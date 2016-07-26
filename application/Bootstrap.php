@@ -17,14 +17,14 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
      * 注册系统配置项
      * @param Yaf_Dispatcher $dispatcher
      */
-    public function _initConfig(Yaf_Dispatcher $dispatcher){
+    public function _initConfig(Yaf_Dispatcher $dispatcher)
+    {
         //ini_set('yaf.thowException' , 1);
         session_start();
-        $config = require( CONFIG_PATH."config.php") ;
+        $config = require(CONFIG_PATH . "config.php");
         $this->_config = Yaf_Application::app()->getConfig();
-        Yaf_Registry::set("config" , $config);
+        Yaf_Registry::set("config", $config);
     }
-
     /**
      * 注册数据库连接
      * @param Yaf_Dispatcher $dispatcher

@@ -12,6 +12,9 @@
         margin-left: 20px;
         margin-right: 20px;
     }
+    body{
+        text-align: left;
+    }
 </style>
     <div class="container" style="display: block;" id="content">
         <div class="container jumbotron content_postition" >
@@ -40,7 +43,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick = "ajax_login()" title="Login State">登陆</button>
+                <button type="button" class="btn btn-primary" onclick = "ajax_login()">登陆</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
             </div>
         </div>
@@ -63,6 +66,8 @@
                 if(d.state == 1){
                     window.location.href = '<?php echo $returnUrl ;?>';
                 }else {
+                    $('input:text').val('');
+                    $('input:password').val('');
                     alert(d.massage);
                 }
             }
