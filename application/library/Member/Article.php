@@ -22,4 +22,23 @@ class Member_Article extends Model
 
         return $this->update('category',['type'=>1],"id = {$id}");
     }
+
+    public function addCategory($data){
+        $sql = "SELECT * FROM `category` WHERE name = '{$data['name']}'";
+        $re = $this->query($sql);
+        if($re){
+            return $this->update('category',['type'=>0],'id='.$re[0]['id']);
+        }else{
+           return $this->insert('category',$data);
+        }
+    }
+
+    public function addArticle($data){
+        return $this->insert('Article',$data);
+    }
+
+    public function getAllArticle(){
+        $sql = "SELECT id,title,cid,gid,introduce FROM `article` WHERE is_show = 1 ";
+        return $this->query($sql);
+    }
 }

@@ -26,7 +26,7 @@ class loginController extends Yaf_Controller_Abstract
         $_SESSION['num'] = 0;
         if($_SESSION['num'] > 4){
             $data = array('massage'=>'尝试次数太多了！！','state'=>0);
-            ajax_massage($data);
+            ajax_message($data);
         }
         if(!isset($_POST['username']) && !isset($_POST['password']) && !is_string($_POST['password']) && !is_string($_POST['username']) ) return false;
         $user = $_POST['username'];
@@ -42,8 +42,8 @@ class loginController extends Yaf_Controller_Abstract
                 'state' => 1
             );
         }else{
-            $data = array('massage'=>'用户名或密码错误！','state'=>0);
+            $data = array('message'=>'用户名或密码错误！','state'=>0);
         }
-        ajax_massage($data);
+        ajax_message($data);
     }
 }

@@ -1,8 +1,17 @@
 <?php include HEADER_PATH; ?>
 <style type="text/css">
     select {
-        font-family:;
         width: 100%;
+    }
+
+    .input-addCategory {
+        width: 300px;
+    }
+    .footer{
+        width:100%;
+        margin: 20px auto;
+        position: absolute;
+        bottom: 10px;
     }
 </style>
 <div class="container">
@@ -21,24 +30,88 @@
         <div class="col-md-2">
         </div>
         <div class="col-md-4">
-            <button class="btn btn-default" type="button" onclick="delGroup(document.getElementById('group'))">删除父级分类
+            <button type="button" class="btn btn-default" data-toggle="modal"
+                    onclick="delGroup(document.getElementById('group'))">
+                删除父级分类
             </button>
-            <button class="btn btn-default" type="button">添加父级分类</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addGroup">
+                添加父级分类
+            </button>
+            <div class="modal fade" id="addGroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">添加父类</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group container input-addCategory" style="margin:0 auto;">
+                                <span class="input-group-addon">分类名称</span>
+                                <input type="text" class="form-control " placeholder="分类名称"
+                                       aria-describedby="sizing-addon1" id="addGroupName">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="addGroupButton" class="btn btn-primary"
+                                    onclick="add(document.getElementById('addGroupName'),null)">
+                                添加
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            <button class="btn btn-default" type="button" onclick="delGroup(document.getElementById('category'))">删除子分类</button>
-            <button class="btn btn-default" type="button">添加子分类</button>
+            <button class="btn btn-default" type="button" onclick="delGroup(document.getElementById('category'))">
+                删除子分类
+            </button>
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#addCategory" onclick="categoryGroup()">添加子分类</button>
+            <div class="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">添加子类</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group container input-addCategory">
+                                <span class="input-group-addon ">所属分类</span>
+                                <select class="form-control form-text " name="group" id="addCategoryGroup">
+                                </select>
+                            </div>
+                            <div class="input-group container input-addCategory">
+                                <span class="input-group-addon">分类名称</span>
+                                <input type="text" class="form-control " placeholder="分类名称"
+                                       aria-describedby="sizing-addon1" id="addGategoryName">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="addCategoryButton" class="btn btn-primary"
+                                    onclick="add(document.getElementById('addGategoryName'),document.getElementById('addCategoryGroup'))">
+                                添加
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+</div>
 <?php include FOOTER_PATH; ?>
 <script type="application/javascript">
-    var genus =<?php echo $category ?>;
+    var genus;
+    genus =<?php echo $category ?>;
     var group = document.getElementById('group');
     var category = document.getElementById('category');
+    var addGroup = document.getElementById('addCategoryGroup');
     for (var o in genus) {
         if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
             group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
+            addGroup.options[addGroup.length] = new Option(genus[o]['name'], genus[o]['id']);
         }
         if (group.value == genus[o]['cid']) {
             category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
@@ -55,8 +128,8 @@
     }
 
     function delGroup(i) {
-        if(!category.length || i == category ){
-            if (i.value) {
+        if (!category.length || i == category) {
+            if (group.value) {
                 $.ajax({
                     url: '/Member/Index/delGroup',
                     type: "post",
@@ -65,16 +138,7 @@
                     cache: false,
                     success: function (d) {
                         if (d.status == 1) {
-                            genus = d.genus;
-                            group.length = 0;
-                            for (var o in genus){
-                                if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
-                                    group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
-                                }
-                                if (group.value == genus[o]['cid']) {
-                                    category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
-                                }
-                            }
+                            forGroup(i, d.genus);
                         } else {
                             alert(d.message);
                         }
@@ -83,10 +147,84 @@
             } else {
                 alert('请选择父级分类');
             }
-        }else{
+        } else {
             alert('该类有子分类');
         }
     }
 
+    function add(g, s) {
+        var name, cid;
+        if (!s) {
+            name = g.value;
+            cid = null;
+        } else {
+            name = g.value;
+            cid = s.value;
+        }
+        for (var o in genus) {
+            if (genus[o]['name'] == name) {
+                if (s) {
+                    $('#addCategory').modal('hide');
+                } else {
+                    $('#addGroup').modal('hide');
+                }
+                alert('分类名存在');
+                return false;
+            }
+        }
+        if (name) {
+            $.ajax({
+                url: 'addGroup',
+                type: 'post',
+                dataType: 'json',
+                cache: false,
+                data: {'name': name, 'cid': cid},
+                success: function (d) {
+                    if (d.status == 1) {
+                        if (s) {
+                            forGroup(category, d.data);
+                            $('#addCategory').modal('hide');
+                        } else {
+                            forGroup(group, d.data);
+                            $('#addGroup').modal('hide');
+                        }
 
+                    }
+                }
+            });
+        } else {
+            alert('请输入要添加的分类名称');
+        }
+    }
+
+    function forGroup(i, d) {
+        genus = d;
+        if (i == group) {
+            group.length = 0;
+            for (var o in genus) {
+                if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
+                    group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
+                }
+                if (group.value == genus[o]['cid']) {
+                    category.options[category.length] = new Option(genus[o]['name'], genus[o]['id']);
+                }
+            }
+        } else if (i == category) {
+            category.length = 0;
+            for (var o in genus) {
+                if (group.value == genus[o]['cid']) {
+                    category.options[category.length] = new Option(genus[o]['name'], genus[o]['id']);
+                }
+            }
+        }
+    }
+
+    function categoryGroup(){
+        addGroup.length = 0;
+        for (var o in genus) {
+            if (genus[o]['Grade'] == 1 && genus[o]['type'] == 0) {
+                addGroup.options[addGroup.length] = new Option(genus[o]['name'], genus[o]['id']);
+            }
+        }
+    }
 </script>

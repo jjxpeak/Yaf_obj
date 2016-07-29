@@ -225,9 +225,9 @@ class Db_Databases
             if($this->mso->execute()){
                 return true;
             }else{
-                throw new PDOException($this->getError());
+                throw new Yaf_Exception($this->getError());
             }
-        }catch(PDOException $e){
+        }catch(Yaf_Exception $e){
             $this->getErrorMessage($e);
         }
     }

@@ -1,0 +1,15 @@
+<?php include HEADER_PATH; ?>
+<div class="container">
+    <div class="row">
+        <?php include 'menu_left.html'; ?>
+        <div class="col-md-10">
+            <?php foreach($list as $k=>$v){?>
+            <div class="row">
+                <div class="col-md-2"><?php echo $v['id']?></div>
+                <div class="col-md-8"><?php echo $v['title']?></div>
+            </div>
+            <?php }?>
+        </div>
+    </div>
+</div>
+<?php include FOOTER_PATH; ?>

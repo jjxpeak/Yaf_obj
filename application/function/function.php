@@ -36,7 +36,7 @@ function decrypt($sStr, $sKey) {
     return $decrypted;
 }
 
-function ajax_massage($data){
+function ajax_message($data){
     if(is_array($data)){
         $massage = json_encode($data);
     }else{

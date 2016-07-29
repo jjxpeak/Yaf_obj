@@ -28,6 +28,10 @@
     .form-function{
         padding-left:70px;
     }
+    .footer{
+        width:100%;
+        margin: 0 auto;
+    }
 </style>
 
 <div class="container">
@@ -56,9 +60,9 @@
                         </select>
                     </div>
                 </div>
-                <script id="container" name="content" type="text/plain"></script>
+                <script id="container" name="content" type="text/plain" style="width:100%;height:400px;"></script>
                 <div class="submit">
-                    <button type="submit" id="submit" class="btn btn-primary" autocomplete="off">
+                    <button type="submit" id="submit" onclick="contentSubmit()" class="btn btn-primary" autocomplete="off">
                         提交
                     </button>
                 </div>
@@ -75,17 +79,47 @@
             group.options[group.length] = new Option(genus[o]['name'], genus[o]['id']);
         }
         if(group.value == genus[o]['cid']){
-            category.options[category.length] = new Option(genus[o]['name'], genus[o]['cid']);
+            category.options[category.length] = new Option(genus[o]['name'], genus[o]['id']);
         }
     }
 
     function clickSelect(){
-        category.length=0;
+        category.options.length=0;
         for (var v in genus){
             if(group.value == genus[v]['cid']){
                 category.options[category.length] = new Option(genus[v]['name'], genus[v]['id']);
             }
         }
+    }
+
+    $("form").submit(function(){
+        if(!contentSubmit()){
+            return false;
+        }
+
+    });
+    function contentSubmit(){
+        var title = $('[name=\'title\']').val();
+        var group = $('[name=\'group\']').val();
+        var category = $('[name=\'category\']').val();
+        var content = $('[name=\'content\']').val();
+        if(!content){
+            alert('需要输入文章内容');
+            return false;
+        }
+        if(!title){
+            alert('需要输入文章标题');
+            return false;
+        }
+        if(!group){
+            alert('需要选择所属栏目');
+            return false;
+        }
+        if(!category){
+            alert('需要选择所属分类');
+            return false;
+        }
+        return true;
     }
 </script>
 <?php include FOOTER_PATH; ?>
