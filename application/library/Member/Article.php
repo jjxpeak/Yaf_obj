@@ -38,7 +38,15 @@ class Member_Article extends Model
     }
 
     public function getAllArticle(){
-        $sql = "SELECT id,title,cid,gid,introduce FROM `article` WHERE is_show = 1 ";
-        return $this->query($sql);
+        $count = $this->query("SELECT COUNT('id') as count FROM `article` WHERE is_show = 1 ")[0]['count'];
+        $page = new Page($count,2);
+        $sql = "SELECT id,title,cid,gid,introduce FROM `article` WHERE is_show = 1 LIMIT $page->firstRow,$page->lastRow";
+        $data['list'] = $this->query($sql);
+        $data['page'] = $page;
+        return $data;
+    }
+
+    public function getArticleContent($id){
+        $sql = "SELECT * FROM id,title,cid,gid,content";
     }
 }

@@ -21,6 +21,9 @@ class indexController extends Yaf_Controller_Abstract
     {
 
     }
+    public function listAction(){
+       echo  $this->getRequest()->getParam('id');
+    }
     public function __destruct()
     {
         // TODO: Implement __destruct() method.

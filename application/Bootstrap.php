@@ -26,6 +26,14 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
         Yaf_Registry::set("config", $config);
     }
     /**
+     * 注册路由
+     * @param Yaf_Dispatcher $dispatcher
+     */
+    public function _initRoute(Yaf_Dispatcher $dispatcher){
+        $router = Yaf_Dispatcher::getInstance()->getRouter();
+        $router->addConfig($this->_config->routes);
+    }
+    /**
      * 注册数据库连接
      * @param Yaf_Dispatcher $dispatcher
      */
@@ -34,18 +42,6 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
         $config = Yaf_Registry::get('config');
         new Db($config);
     }
-
-    /**
-     * 注册路由
-     * @param Yaf_Dispatcher $dispatcher
-     */
-    public function _initRoute(Yaf_Dispatcher $dispatcher){
-        $router = Yaf_Dispatcher::getInstance()->getRouter();
-        $router->addConfig($this->_config->routes);
-    }
-
-
-
 
 
 
