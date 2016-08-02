@@ -23,9 +23,9 @@ class loginController extends Yaf_Controller_Abstract
         $this->view->assign('returnUrl',$returnUrl);
     }
     public function actAction(){
-        $_SESSION['num'] = 0;
+        empty($_SESSION['num'])?$_SESSION['num'] = 0:$_SESSION['num'];
         if($_SESSION['num'] > 4){
-            $data = array('massage'=>'尝试次数太多了！！','state'=>0);
+            $data = array('message'=>'尝试次数太多了！！','state'=>0);
             ajax_message($data);
         }
         if(!isset($_POST['username']) && !isset($_POST['password']) && !is_string($_POST['password']) && !is_string($_POST['username']) ) return false;

@@ -8,10 +8,12 @@
 class indexController extends Yaf_Controller_Abstract
 {
     private $view;
+    private $model;
 
     public function init()
     {
         $this->view = $this->initView()->_view;
+        $this->model = new Member_Article();
         if ($this->getRequest()->isXmlHttpRequest()) {
             Yaf_Dispatcher::getInstance()->disableView();
         }
@@ -22,7 +24,13 @@ class indexController extends Yaf_Controller_Abstract
 
     }
     public function listAction(){
-       echo  $this->getRequest()->getParam('id');
+        $id = intval($this->getRequest()->getParam('id'));
+        $content = $this->model->getArticleContent($id);
+        if(!$content){
+            header("HTTP/1.1 404 Not Found");
+            header('Location:' . $_SERVER['HOST_NAME'] . '/NotFound.html');
+        }
+        $this->view->assign('content',$content);
     }
     public function __destruct()
     {

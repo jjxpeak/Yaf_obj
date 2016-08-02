@@ -1,0 +1,30 @@
+<?php include HEADER_PATH?>
+<style type="text/css">
+    body{
+        text-align: left;
+    }
+    .page-header h1{
+        text-align: center;
+    }
+    .page-footer h6 {
+        float: right;
+    }
+    .page-footer h5 {
+        float: left;
+    }
+</style>
+<div class="container">
+    <div class="page-header">
+        <h1><?php echo $content['title'];?></h1>
+    </div>
+    <?php echo $content['content'];?>
+    <div class="page-footer">
+        <h5><a href=""><?php echo $content['gname'].'</a>>><a href="">'.$content['cname']?></a></h5>
+        <h6><?php
+        $time = ($content['save_time'] != 0)?$content['save_time']:$content['add_time'];
+        echo date('Y-m-d H:i',$content['add_time']);
+
+        ?></h6>
+    </div>
+</div>
+<?php include FOOTER_PATH?>

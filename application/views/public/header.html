@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>Hello World</title>
+    <link rel="icon" href="./img/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="keywords" content="Personal website Peak" />
@@ -17,14 +19,20 @@
     <script src="/js/jquery-1.11.1.min.js"></script>
     <script src="/js/bootstrap.js"></script>
     <style type="text/css">
+        body{
+            height:100%;
+            display: block;
+            position: relative;
+        }
         .container{
             margin-top:40px;
         }
         .footer{
-            width:100%;
-            margin: 20px auto;
-            /*position: absolute;*/
-            /*bottom: 10px;*/
+            height: 50px;
+            width: 100%;
+            background-color: #000;
+            position: absolute;
+            bottom: 0px;
         }
     </style>
 </head>
@@ -42,8 +50,8 @@
                     <nav>
                         <li><a href="/index">首页</a></li>
                         <li><a href="#">技术博文</a></li>
-                        <li><a href="#">个人日记</a></li>
-                        <li><a href="/member/index/index">写日记</a></li>
+                        <li><a href="#">生活点滴</a></li>
+                        <li><a href="/member/index/index">开始记录</a></li>
                     </nav>
                 </ul>
             </div>

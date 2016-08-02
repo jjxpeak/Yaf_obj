@@ -1,0 +1,93 @@
+<?php include HEADER_PATH; ?>
+<!-- ueditor include start -->
+<style type="text/css">
+    .table th,td{
+        text-align: center;
+    }
+    .input-group{
+        width: 400px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <?php include 'menu_left.html'; ?>
+        <div class="col-md-10" id="content">
+            <table class="table table-bordered">
+                <tr>
+                    <th>id</th>
+                    <th>用户名</th>
+                    <th>权限</th>
+                    <th>操作</th>
+                </tr>
+                <?php foreach($userList as $v){?>
+                <tr>
+                    <td><?php echo $v['id']?></td>
+                    <td><?php echo $v['username']?></td>
+                    <td>
+                        <?php
+                            switch($v['power']){
+                                 case 1:
+                                    echo '系统管理员';
+                                    break;
+                                 case 2:
+                                    echo '管理员';
+                                    break;
+                                 defaule:
+                                    echo '会员';
+                            }
+                        ?>
+                    </td>
+                    <td><a href="<?php echo $v['id']?>">禁用</a></td>
+                </tr>
+                <?php }?>
+                <tr>
+                    <td colspan="4" style="text-align: right"><a href="" data-toggle="modal" data-target="#myModal">添加用户</a></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加用户</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group input-group-lg container">
+                        <span class="input-group-addon" >UserName</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
+                    </div>
+                    <div class="input-group input-group-lg container">
+                        <span class="input-group-addon">Password</span>
+                        <input type="password" class="form-control" placeholder="Password" aria-describedby="sizing-addon1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick = "ajax_addUser()">添加</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function ajax_addUser(){
+    var username = $('input:text').val();
+    var pass = $('input:password').val();
+    if(username && pass){
+        $.ajax({
+            url:'addUser',
+            type:'post',
+            dataType:'json',
+            cache:false,
+            data:{'username':username,'password':pass},
+            success:function(d){
+            console.log(d.username);
+            console.log(d);
+        }
+        });
+    }
+}
+</script>
+<?php include FOOTER_PATH; ?>

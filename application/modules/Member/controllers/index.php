@@ -39,28 +39,7 @@ class indexController extends Yaf_Controller_Abstract
      */
     public function saveContentAction()
     {
-        $message = null;
-        $data['title'] = $_POST['title'] ? $_POST['title'] : $message = 1;
-        $data['content'] = $_POST['content'] ? $_POST['content'] : $message = 1;
-        $data['introduce'] = $_POST['introduce'];
-        $data['gid'] = $_POST['group'] ? $_POST['group'] : $message = 1;
-        $data['cid'] = $_POST['category'] ? $_POST['category'] : $message = 1;
-        $data['add_time'] = time();
-        $data['uid'] = $_SESSION['userInfo']['id'];
-        if ($message) {
-            echo '数据错误';
-            echo '<meta http-equiv="refresh" content="3;url=index"> ';
-            exit;
-        }
-        $re = $this->model->addArticle($data);
-        if ($re) {
-            echo '添加成功';
-            echo '<meta http-equiv="refresh" content="3;url=index"> ';
-        } else {
-            echo '添加失败';
-            echo '<meta http-equiv="refresh" content="3;url=index"> ';
-        }
-        Yaf_Dispatcher::getInstance()->disableView();
+        $this->contentActAction('update');
     }
 
     /**
@@ -122,6 +101,9 @@ class indexController extends Yaf_Controller_Abstract
         }
     }
 
+    /**
+     * 文章列表
+     */
     public function articleAction()
     {
         $data = $this->model->getAllArticle();
@@ -132,19 +114,107 @@ class indexController extends Yaf_Controller_Abstract
 
     }
 
+    /**
+     * 文章操作
+     */
     public function articleActAction()
     {
         $act = $_GET['act'];
+        $id = intval($_GET['id']);
         switch ($act) {
-            case 'edit':
-                echo $act;
-                break;
             case 'del':
-                echo $act;
+                $re = $this->model->delArticle($id);
+                if($re){
+                    ajax_message(['status'=>1]);
+                }else{
+                    ajax_message(['status'=>0,'message'=>'删除失败或文章不存在']);
+                }
                 break;
             default:
                 ajax_message(['status' => 0, 'message' => '非法操作']);
         }
-        var_dump($_GET);
+    }
+
+    /**
+     * 修改文章页
+     */
+    public function modifyAction(){
+        $id = intval($_GET['id']);
+        $category = $this->model->getCategory();
+        $content = $this->model->getArticleContent($id);
+        if(!$content){
+            header("HTTP/1.1 404 Not Found");
+            header('Location:' . $_SERVER['HOST_NAME'] . '/NotFound.html');
+        }
+        $this->view->assign('category', json_encode($category));
+        $this->view->assign('content', $content);
+    }
+
+    /**
+     * 文章修改保存
+     */
+    public function updateContentAction(){
+        $this->contentActAction('update');
+    }
+
+    /**
+     * 添加修改操作
+     * @param $act 操作方法
+     */
+    private function contentActAction($act){
+        $message = null;
+        $data['title'] = $_POST['title'] ? $_POST['title'] : $message = 1;
+        $data['content'] = $_POST['content'] ? $_POST['content'] : $message = 1;
+        $data['introduce'] = $_POST['introduce'];
+        $data['gid'] = $_POST['group'] ? $_POST['group'] : $message = 1;
+        $data['cid'] = $_POST['category'] ? $_POST['category'] : $message = 1;
+        $data['add_time'] = time();
+        $data['uid'] = $_SESSION['userInfo']['id'];
+        if ($message) {
+            echo '数据错误';
+            echo '<meta http-equiv="refresh" content="3;url=index"> ';
+            exit;
+        }
+        if($act == 'update'){
+            $id = intval($_POST['id']);
+            $re = $this->model->updateArticle($data,$id);
+            if ($re) {
+                echo '修改成功';
+                echo '<meta http-equiv="refresh" content="3;url=article"> ';
+            } else {
+                echo '修改失败';
+                echo '<meta http-equiv="refresh" content="3;url=modify?id=".$id> ';
+            }
+        }else if($act == 'add'){
+            $re = $this->model->addArticle($data);
+            if ($re) {
+                echo '添加成功';
+                echo '<meta http-equiv="refresh" content="3;url=index"> ';
+            } else {
+                echo '添加失败';
+                echo '<meta http-equiv="refresh" content="3;url=index"> ';
+            }
+        }
+        Yaf_Dispatcher::getInstance()->disableView();
+    }
+
+    /**
+     * 用户管理
+     */
+    public function userAction(){
+        $userList = $this->model->getUser();
+        $this->view->assign('userList',$userList);
+    }
+
+    public function addUserAction(){
+        $username = $_POST['usernaem'];
+        $password = md5($_POST['password']);
+        $password = enCrypt($password,WEB_KEY);
+        $data = compact('username','password');
+        if($this->model->addUser($data)){
+            ajax_message(['status'=>1]);
+        }else{
+            ajax_message(['status'=>0,'message'=>'添加失败请重试']);
+        }
     }
 }
