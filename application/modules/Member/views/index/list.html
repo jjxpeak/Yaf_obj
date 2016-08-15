@@ -7,12 +7,15 @@
         text-align: center;
     }
     .page-footer h6 {
-        margin-top: 10px;
+        margin-top: 5px;
         float: right;
     }
     .page-footer h5 {
-        margin-top: 10px;
+        margin-top: 5px;
         float: left;
+    }
+    .clear{
+        clear: both;
     }
     .page-footer{
         border-top:1px solid #eeeeee;
@@ -20,30 +23,24 @@
         height:20px;
 
     }
-    .clear{
-        clear: both;
-    }
-
     .footer{
         text-align: center;
     }
     .page{
         min-height: 100px;
     }
-
 </style>
 <div class="container">
     <div class="page-header">
         <h1><?php echo $content['title'];?></h1>
         <div class="page-footer">
-            <h5 ><a href="/index/index/articleList/g/<?php echo $content['gid']?>"><?php echo $content['gname']?></a>>><a href="/index/index/articleList/g/<?php echo $content['cid']?>"><?php echo $content['cname']?></a></h5>
-            <h6 ><?php
+            <h5 ><a href="/index/index/articleList/g/<?php echo $group['id']?>"><?php echo $group['name']?></a>>><a href="/index/index/articleList/g/<?php echo $category['id']?>"><?php echo $category['name']?></a></h5>
+            <h6><?php
         $time = ($content['save_time'] != 0)?$content['save_time']:$content['add_time'];
         echo date('Y-m-d H:i',$time);
         ?></h6>
         </div>
     </div>
-
     <div class="page">
         <?php echo $content['content'];?>
     </div>

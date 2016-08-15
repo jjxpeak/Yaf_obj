@@ -3,14 +3,6 @@
     .margin-row {
         margin: 20px auto;
     }
-
-    .footer {
-        width: 100%;
-        margin: 0 auto;
-        /*position: relative;*/
-        /*top: 90px;*/
-    }
-
     #content {
         height: 750px;
         position: relative;
@@ -57,41 +49,9 @@
             <?php }?>
         </div>
     </div>
-    <div class="row">
-
-        <ul class="pagination">
-
-            <?php if(($page->nowPage-1) <= 0){?>
-            <li class="disabled">
-                <a href="javascript:void(0);" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <?php }else{?>
-            <li>
-                <a href="article?p=<?php echo $page->nowPage-1;?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <?php }?>
-
-            <?php for($i=1;$i<= $page->page;$i++){ ?>
-            <li><a href="article?p=<?php echo $i;?>">5</a></li>
-            <?php } ?>
-            <?php if(($page->nowPage) >= $page->page){?>
-            <li class="disabled">
-                <a href="javascript:void(0);" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-            </li>
-            <?php }else{?>
-            <li>
-                <a href="article?p=<?php echo $page->nowPage+1;?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-            <?php }?>
-        </ul>
-    </div>
+    <?php if( !empty($page) && is_object($page)){
+            $page->pageShow('article');
+    }?>
 </div>
 <script type="application/javascript">
     function articleAct(a, d, obj) {

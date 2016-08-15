@@ -24,6 +24,7 @@
     }
 </style>
 <div class="col-md-2 col_default ">
+    <span class="left_menu"></span>
     <ul class="list-unstyled">
         <nav>
             <li><a href="index">添加文章</a></li>
@@ -35,4 +36,9 @@
     </ul>
 </div>
 <script type="application/javascript">
+    $("span.left_menu").click(function () {
+        $(".list-unstyled").slideToggle("slow", function () {
+            // Animation complete.
+        });
+    });
 </script>

@@ -32,6 +32,7 @@
                                  case 2:
                                     echo '管理员';
                                     break;
+                                 case 3:
                                  defaule:
                                     echo '会员';
                             }
@@ -75,6 +76,13 @@
 function ajax_addUser(){
     var username = $('input:text').val();
     var pass = $('input:password').val();
+    var table = document.getElementsByClassName('table')[0];
+    var tableLength = document.getElementsByClassName('table')[0].rows.length -1;
+    var tr = table.insertRow(tableLength);
+    var td1 = tr.insertCell(tr.cells.length);
+    var td2 = tr.insertCell(tr.cells.length);
+    var td3 = tr.insertCell(tr.cells.length);
+    var td4 = tr.insertCell(tr.cells.length);
     if(username && pass){
         $.ajax({
             url:'addUser',
@@ -83,8 +91,25 @@ function ajax_addUser(){
             cache:false,
             data:{'username':username,'password':pass},
             success:function(d){
-            console.log(d.username);
-            console.log(d);
+                if (d.status == 1){
+                    $('#myModal').modal('hide');
+                    td1.innerHTML = d.data.id;
+                    td2.innerHTML = d.data.username;
+                    switch (d.data.power){
+                        case 1:
+                            td3.innerHTML = '系统管理员';
+                            break;
+                        case 2:
+                            td3.innerHTML = '管理员';
+                            break;
+                        case 3:
+                        default:
+                            td3.innerHTML = '会员';
+                    }
+                    td4.innerHTML = '<a herf="">禁用</a>';
+                }else {
+                    alert(d.message);
+                }
         }
         });
     }

@@ -155,3 +155,42 @@ nav a:focus {
         width: 27.5%;
     }
 }
+@media (max-width: 768px) {
+    span.left_menu {
+        width: 35px;
+        height: 35px;
+        background: url(../img/nav.png) no-repeat 0px 0px;
+        display: inline-block;
+        float: right;
+        cursor: pointer;
+        margin-top: 21px;
+    }
+
+    .list-unstyled {
+        width: 100%;
+        display: none;
+        text-align: center;
+        background: #fff;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    .span_2 {
+        margin-top: 2em;
+    }
+
+    .left_menu ul {
+        float: none;
+        width: 100%;
+    }
+
+    .left_menu ul li {
+        display: block;
+        float: none;
+        margin: 5px 0;
+    }
+
+    .logo {
+        width: 27.5%;
+    }
+}

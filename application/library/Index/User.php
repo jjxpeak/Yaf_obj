@@ -9,8 +9,8 @@
 class Index_User extends Model
 {
     public function getUserInfo($username,$password,$find){
-        $sql = "SELECT {$find} FROM `user` WHERE `username` =  '{$username}'  AND `password` =  '{$password}' LIMIT 1 ";
-        $re = $this->query($sql);
+        $sql = "SELECT {$find} FROM `user` WHERE `username` =  ?  AND `password` =  ? LIMIT 1 ";
+        $re = $this->query($sql,[$username,$password]);
         if(empty($re)){
            return false;
         }else{

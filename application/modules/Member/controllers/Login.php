@@ -33,8 +33,7 @@ class loginController extends Yaf_Controller_Abstract
         $pass = encrypt(md5($_POST['password']),WEB_KEY);
         $_SESSION['num'] +=1;
         $userLink= new Index_User();
-        $info = $userLink->getUserInfo($user,$pass,'id,username,password');
-
+        $info = $userLink->getUserInfo($user,$pass,'id,username,power,status');
         if($info){
             $_SESSION['userInfo'] = $info;
             $data = array(

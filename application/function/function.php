@@ -145,3 +145,32 @@ function export_csv($filename,$data)
     header('Pragma:public');
     echo $data;
 }
+
+/**
+ * curl提交参数
+ * @param string $url
+ * @param array $data
+ */
+function Curl($url,$type,$data=array()){
+    $type = strtoupper($type);
+    $url = curl_init($url);
+    curl_setopt($url,CURLOPT_HEADER,0);
+    curl_setopt($url,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($url,CURLOPT_CUSTOMREQUEST,$type);
+    curl_setopt($url, CURLOPT_SSL_VERIFYPEER, false);
+    if($type == "POST"){
+        curl_setopt($url,CURLOPT_POSTFIELDS,$data);
+    }
+    $content = curl_exec($url);
+    echo "<pre>";
+    var_dump(curl_getinfo($url));
+    curl_close($url);
+    return $content;
+}
+
+/**
+ * token b610567eb6973f337061a6b68cd76575
+ */
+function wuchouzhijia(){
+
+}

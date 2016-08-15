@@ -32,16 +32,22 @@ class Db_Databases
     /**
      * 查询
      * @param String $sql
+     * @param array $param
      * @param int $type
      * @return array $query
      */
-    public function query($sql, $type = PDO::FETCH_ASSOC)
+    public function query($sql,$param, $type = PDO::FETCH_ASSOC)
     {
         if (is_string($sql) && preg_match_all('/^select/i',$sql)) {
 
             try {
                 $this->sql = $sql;
                 $this->mso = $this->link->prepare($sql);
+                $i = 1;
+                foreach($param as $k =>$v){
+                    $this->mso->bindValue($i,$v);
+                    $i++;
+                }
                 $result = $this->mso->execute();
                 if ($result == false) {
                     throw new PDOException($this->getError());
@@ -55,6 +61,7 @@ class Db_Databases
             return NULL;
         }
     }
+
 
     /**
      * 更新操作

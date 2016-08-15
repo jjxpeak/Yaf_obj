@@ -37,8 +37,7 @@
 <div class="container">
     <div class="row">
         <?php include 'menu_left.html'; ?>
-        <div class="col-md-8" id="content">
-
+        <div class="col-md-10" id="content">
             <form action="/member/index/UpdateContent" method="post">
                 <div class="form-function">
                     <div class="form-group row">
@@ -64,9 +63,12 @@
                                     <?php echo $content['content']?>
                 </script>
                 <input type="hidden" name="id" value="<?php echo $content['id']?>">
+                <input type="hidden" name="add_time" value="<?php echo $content['add_time']?>">
+                <input type="hidden" name="gname" value="">
+                <input type="hidden" name="cname" value="">
                 <div class="submit">
                     <button type="submit" id="submit" onclick="contentSubmit()" class="btn btn-primary" autocomplete="off">
-                        提交
+                        修改
                     </button>
                 </div>
             </form>

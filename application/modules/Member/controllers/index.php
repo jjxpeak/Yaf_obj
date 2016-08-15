@@ -9,19 +9,30 @@ class indexController extends Yaf_Controller_Abstract
 {
     private $model;
     private $view;
+    private $power = array('delgroup','addgroup','adduser');
 
 
     public function init()
     {
         if (isset($_SESSION['userInfo']['id'])) {
+            $request = $this->getRequest();
+            if(in_array($request->action,$this->power)){
+                if($_SESSION['userInfo']['power'] !=1 ) {
+                    if ($request->isXmlHttpRequest()) {
+                        ajax_message(['status' => 0, 'message' => '权限不足']);
+                    } else {
+                        $this->locationNotFountAction();
+                    }
+                }
+            }
             $this->view = $this->initView()->_view;
             $this->model = new Member_Article();
-            if ($this->getRequest()->isXmlHttpRequest()) {
+            if ($request->isXmlHttpRequest()) {
                 Yaf_Dispatcher::getInstance()->disableView();
             }
         } else {
             header("HTTP/1.1 302 Moved Permanently");
-            header('Location:' . $_SERVER['HOST_NAME'] . '/member/login/index?returnUrl=' . urlencode($_SERVER['HOST_NAME'] . $_SERVER['PATH_INFO']));
+            header('Location:http://' . $_SERVER['HTTP_HOST'] . '/member/login/index?returnUrl=' . urlencode('http://'.$_SERVER['HTTP_HOST'].$_SERVER['REDIRECT_URL']));
         }
     }
 
@@ -31,7 +42,9 @@ class indexController extends Yaf_Controller_Abstract
     public function indexAction()
     {
         $category = $this->model->getCategory();
+
         $this->view->assign('category', json_encode($category));
+
     }
 
     /**
@@ -39,7 +52,7 @@ class indexController extends Yaf_Controller_Abstract
      */
     public function saveContentAction()
     {
-        $this->contentActAction('update');
+        $this->contentActAction('add');
     }
 
     /**
@@ -109,7 +122,10 @@ class indexController extends Yaf_Controller_Abstract
         $data = $this->model->getAllArticle();
         $group = $this->model->getCategory();
         $this->view->assign('list', $data['list']);
-        $this->view->assign('page',$data['page']);
+        if(!empty($data['page'])){
+            $this->view->assign('page',$data['page']);
+
+        }
         $this->view->assign('group', $group);
 
     }
@@ -143,8 +159,7 @@ class indexController extends Yaf_Controller_Abstract
         $category = $this->model->getCategory();
         $content = $this->model->getArticleContent($id);
         if(!$content){
-            header("HTTP/1.1 404 Not Found");
-            header('Location:' . $_SERVER['HOST_NAME'] . '/NotFound.html');
+            $this->locationNotFountAction();
         }
         $this->view->assign('category', json_encode($category));
         $this->view->assign('content', $content);
@@ -162,36 +177,58 @@ class indexController extends Yaf_Controller_Abstract
      * @param $act 操作方法
      */
     private function contentActAction($act){
+        if(empty($_POST['title'])){
+            $this->locationNotFountAction();
+            exit;
+        }
         $message = null;
         $data['title'] = $_POST['title'] ? $_POST['title'] : $message = 1;
         $data['content'] = $_POST['content'] ? $_POST['content'] : $message = 1;
         $data['introduce'] = $_POST['introduce'];
         $data['gid'] = $_POST['group'] ? $_POST['group'] : $message = 1;
         $data['cid'] = $_POST['category'] ? $_POST['category'] : $message = 1;
-        $data['add_time'] = time();
         $data['uid'] = $_SESSION['userInfo']['id'];
         if ($message) {
-            echo '数据错误';
+            echo '<h1>数据错误</h1>';
             echo '<meta http-equiv="refresh" content="3;url=index"> ';
             exit;
         }
         if($act == 'update'){
+            if(empty($_POST['add_time']) && empty($_POST['id'])) {
+                echo '<h1>数据错误</h1>';
+                echo '<meta http-equiv="refresh" content="3;url=index"> ';
+                exit;
+            }
+            $add_time = intval($_POST['add_time']);
+            $data['add_time']= $add_time;
             $id = intval($_POST['id']);
+            $data['save_time'] = time();
+            $path = 'html/'.date('Ymd',$add_time);
+            $fileName = date('YmdHis',$add_time).'.html';
+            if($this->buildHtmlAction($data,$path,$fileName,'update',$id)) {
+                $data['path'] =$path.'/'.$fileName;
+            }
             $re = $this->model->updateArticle($data,$id);
             if ($re) {
-                echo '修改成功';
+                echo '<h1>修改成功</h1>';
                 echo '<meta http-equiv="refresh" content="3;url=article"> ';
             } else {
-                echo '修改失败';
+                echo '<h1>修改失败</h1>';
                 echo '<meta http-equiv="refresh" content="3;url=modify?id=".$id> ';
             }
         }else if($act == 'add'){
+            $data['add_time'] = time();
+            $path = 'html/'.date('Ymd');
+            $fileName = date('YmdHis').'.html';
+            if($this->buildHtmlAction($data,$path,$fileName)){
+                $data['path'] = $path.'/'.$fileName;
+            }
             $re = $this->model->addArticle($data);
             if ($re) {
-                echo '添加成功';
+                echo '<h1>添加成功</h1>';
                 echo '<meta http-equiv="refresh" content="3;url=index"> ';
             } else {
-                echo '添加失败';
+                echo '<h1>添加失败</h1>';
                 echo '<meta http-equiv="refresh" content="3;url=index"> ';
             }
         }
@@ -207,14 +244,52 @@ class indexController extends Yaf_Controller_Abstract
     }
 
     public function addUserAction(){
-        $username = $_POST['usernaem'];
+        $username = $_POST['username'];
         $password = md5($_POST['password']);
         $password = enCrypt($password,WEB_KEY);
+        $this->model->checkUser($username)?1:ajax_message(['status'=>0 ,'message'=>'用户名存在']);
         $data = compact('username','password');
-        if($this->model->addUser($data)){
-            ajax_message(['status'=>1]);
+        $user = $this->model->addUser($data);
+        if($user){
+            ajax_message(['status'=>1,'data'=>$user]);
         }else{
             ajax_message(['status'=>0,'message'=>'添加失败请重试']);
+        }
+    }
+
+    private function getPassAction(){
+        echo enCrypt(@md5($_GET['tt']),WEB_KEY);
+        Yaf_Dispatcher::getInstance()->disableView();
+    }
+
+    public function cellAction($p){
+        if($p == 'peakget'){
+            $this->getPassAction();
+        }else{
+            $this->locationNotFountAction();
+        }
+    }
+    private function locationNotFountAction(){
+        header("HTTP/1.1 404 Not Found");
+        header('Location:' . $_SERVER['HOST_NAME'] . '/NotFound.html');
+    }
+
+    private function buildHtmlAction($data,$path,$fileName){
+        $this->view->assign('group',$this->model->getListLinkGroup($data['gid']));
+        $this->view->assign('category',$this->model->getListLinkGroup($data['cid']));
+        $this->view->assign('content',$data);
+        $html =  $this->render('list');
+        if(!file_exists($path)){
+            mkdir($path,0777,true);
+        }
+        $file = fopen($path.'/'.$fileName,'w+');
+        if($file){
+            if(fwrite($file,$html)){
+                fclose($file);
+                return true;
+            }else{
+                return false;
+            }
         }
     }
 }

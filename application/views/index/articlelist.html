@@ -1,0 +1,58 @@
+<?php include HEADER_PATH; ?>
+<style type="text/css">
+    /*.footer {*/
+        /*bottom: -160px;*/
+    /*}*/
+
+    .caption a {
+        color: #000;
+    }
+    .caption p {
+        word-wrap: break-word;
+        font-size: 24px;
+        line-height: 20px;
+        text-align: left;
+        height: 100px;
+        overflow: hidden;
+        display: block;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+
+    }
+    h4{
+        text-align: right;
+    }
+    .caption{
+        height: 250px;
+    }
+</style>
+    <div class="container">
+        <div class="row">
+            <?php foreach($list as $k =>$v){
+            if(!empty($v['path'])){
+            $path = $v['path'];
+            }else{
+            $path = $v['id'];
+            }
+            ?>
+            <div class="col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h1><a href="/<?php echo $path ?>"><?php echo $v['title']?></a>
+
+                            <p><?php echo $v['introduce']?></p>
+                            <h4><?php echo date('Y-m-d',$v['add_time'])?></h4>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+        <?php
+    if( !empty($page) && is_object($page)){
+            $page->pageShow('http://'.$_SERVER['HTTP_HOST'].'/index/index/articleList/g/'.$act);
+        }
+        ?>
+    </div>
+<?php include FOOTER_PATH; ?>
