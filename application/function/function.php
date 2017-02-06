@@ -162,8 +162,6 @@ function Curl($url,$type,$data=array()){
         curl_setopt($url,CURLOPT_POSTFIELDS,$data);
     }
     $content = curl_exec($url);
-    echo "<pre>";
-    var_dump(curl_getinfo($url));
     curl_close($url);
     return $content;
 }
